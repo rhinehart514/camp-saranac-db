@@ -4,7 +4,9 @@ School project: database system design for the Saranac Young Life Sleepaway Camp
 
 ## Files
 
-- [`ERD.md`](./ERD.md) — Full Entity-Relationship Diagram with Mermaid diagram, entity descriptions, and design decisions
+- **[View Styled ERD →](https://rhinehart514.github.io/camp-saranac-db/erd.html)** — Red PKs, blue FKs, full relationship table
+- [`ERD.md`](./ERD.md) — Mermaid diagram + entity descriptions + design decisions
+- [`erd.html`](./erd.html) — Styled HTML version
 
 ## System Overview
 

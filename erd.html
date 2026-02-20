@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Camp Saranac Young Life — ERD</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0f0f0f;
+    color: #e5e5e5;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    padding: 40px 24px 80px;
+    min-height: 100vh;
+  }
+
+  header {
+    max-width: 1400px;
+    margin: 0 auto 36px;
+  }
+
+  header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+
+  header p {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 16px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 20px;
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .dot-pk { background: #c0392b; }
+  .dot-fk { background: #2980b9; }
+  .dot-attr { background: #2a2a2a; border: 1px solid #444; }
+
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .entity {
+    background: #1a1a1a;
+    border: 1px solid #2e2e2e;
+    border-radius: 10px;
+    overflow: hidden;
+    min-width: 230px;
+    flex: 1 1 230px;
+    max-width: 300px;
+  }
+
+  .entity-header {
+    background: #222;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid #2e2e2e;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .entity table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  .entity tr {
+    border-bottom: 1px solid #222;
+  }
+
+  .entity tr:last-child {
+    border-bottom: none;
+  }
+
+  .entity td {
+    padding: 7px 12px;
+    color: #ccc;
+  }
+
+  .entity td:first-child {
+    width: 36px;
+    font-weight: 700;
+    font-size: 10px;
+    text-align: center;
+    border-right: 1px solid #222;
+  }
+
+  .entity td:last-child {
+    color: #888;
+    font-size: 11px;
+    text-align: right;
+  }
+
+  /* PK row */
+  tr.pk {
+    background: rgba(192, 57, 43, 0.15);
+  }
+
+  tr.pk td:first-child {
+    color: #e74c3c;
+  }
+
+  tr.pk td:nth-child(2) {
+    color: #e74c3c;
+    font-weight: 600;
+  }
+
+  /* FK row */
+  tr.fk {
+    background: rgba(41, 128, 185, 0.12);
+  }
+
+  tr.fk td:first-child {
+    color: #3498db;
+  }
+
+  tr.fk td:nth-child(2) {
+    color: #5dade2;
+    font-weight: 600;
+  }
+
+  /* Relationships section */
+  .relationships {
+    max-width: 1400px;
+    margin: 32px auto 0;
+    background: #1a1a1a;
+    border: 1px solid #2e2e2e;
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+
+  .relationships h2 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #888;
+    margin-bottom: 14px;
+  }
+
+  .rel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 8px;
+  }
+
+  .rel-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: #111;
+    border: 1px solid #222;
+  }
+
+  .rel-from { color: #e74c3c; font-weight: 600; white-space: nowrap; }
+  .rel-card { color: #555; font-size: 14px; font-weight: 700; }
+  .rel-to   { color: #3498db; font-weight: 600; white-space: nowrap; }
+  .rel-label { color: #666; font-style: italic; margin-left: auto; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Camp Saranac Young Life — Entity Relationship Diagram</h1>
+  <p>Database system design · Centralizes camper data, staff notes, parent communication, and activity tracking</p>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot dot-pk"></div><span>Primary Key (PK)</span></div>
+    <div class="legend-item"><div class="legend-dot dot-fk"></div><span>Foreign Key (FK)</span></div>
+    <div class="legend-item"><div class="legend-dot dot-attr"></div><span>Attribute</span></div>
+  </div>
+</header>
+
+<div class="grid">
+
+  <!-- SESSION -->
+  <div class="entity">
+    <div class="entity-header">SESSION</div>
+    <table>
+      <tr class="pk"><td>PK</td><td>SessionID</td><td>INT</td></tr>
+      <tr><td></td><td>SessionName</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>StartDate</td><td>DATE</td></tr>
+      <tr><td></td><td>EndDate</td><td>DATE</td></tr>
+      <tr><td></td><td>Year</td><td>INT</td></tr>
+    </table>
+  </div>
+
+  <!-- CABIN -->
+  <div class="entity">
+    <div class="entity-header">CABIN</div>
+    <table>
+      <tr class="pk"><td>PK</td><td>CabinID</td><td>INT</td></tr>
+      <tr class="fk"><td>FK</td><td>SessionID</td><td>INT</td></tr>
+      <tr><td></td><td>CabinName</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>Area</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>Capacity</td><td>INT</td></tr>
+    </table>
+  </div>
+
+  <!-- CAMPER -->
+  <div class="entity">
+    <div class="entity-header">CAMPER</div>
+    <table>
+      <tr class="pk"><td>PK</td><td>CamperID</td><td>INT</td></tr>
+      <tr class="fk"><td>FK</td><td>CabinID</td><td>INT</td></tr>
+      <tr class="fk"><td>FK</td><td>SessionID</td><td>INT</td></tr>
+      <tr><td></td><td>FirstName</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>LastName</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>DateOfBirth</td><td>DATE</td></tr>
+      <tr><td></td><td>Gender</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>Allergies</td><td>TEXT</td></tr>
+      <tr><td></td><td>MedicalNotes</td><td>TEXT</td></tr>
+      <tr><td></td><td>Status</td><td>VARCHAR</td></tr>
+    </table>
+  </div>
+
+  <!-- PARENT_GUARDIAN -->
+  <div class="entity">
+    <div class="entity-header">PARENT_GUARDIAN</div>
+    <table>
+      <tr class="pk"><td>PK</td><td>ParentID</td><td>INT</td></tr>
+      <tr><td></td><td>FirstName</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>LastName</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>Phone</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>Email</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>Address</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>RelationshipToChild</td><td>VARCHAR</td></tr>
+    </table>
+  </div>
+
+  <!-- CAMPER_PARENT (junction) -->
+  <div class="entity">
+    <div class="entity-header">CAMPER_PARENT</div>
+    <table>
+      <tr class="pk"><td>PK</td><td>CamperParentID</td><td>INT</td></tr>
+      <tr class="fk"><td>FK</td><td>CamperID</td><td>INT</td></tr>
+      <tr class="fk"><td>FK</td><td>ParentID</td><td>INT</td></tr>
+      <tr><td></td><td>IsPrimaryContact</td><td>BOOLEAN</td></tr>
+    </table>
+  </div>
+
+  <!-- STAFF -->
+  <div class="entity">
+    <div class="entity-header">STAFF</div>
+    <table>
+      <tr class="pk"><td>PK</td><td>StaffID</td><td>INT</td></tr>
+      <tr class="fk"><td>FK</td><td>CabinID</td><td>INT</td></tr>
+      <tr><td></td><td>FirstName</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>LastName</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>Role</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>Phone</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>Email</td><td>VARCHAR</td></tr>
+    </table>
+  </div>
+
+  <!-- CAMPER_NOTE -->
+  <div class="entity">
+    <div class="entity-header">CAMPER_NOTE</div>
+    <table>
+      <tr class="pk"><td>PK</td><td>NoteID</td><td>INT</td></tr>
+      <tr class="fk"><td>FK</td><td>CamperID</td><td>INT</td></tr>
+      <tr class="fk"><td>FK</td><td>StaffID</td><td>INT</td></tr>
+      <tr><td></td><td>NoteDate</td><td>DATETIME</td></tr>
+      <tr><td></td><td>NoteType</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>MoodRating</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>Content</td><td>TEXT</td></tr>
+      <tr><td></td><td>ShareWithParent</td><td>BOOLEAN</td></tr>
+    </table>
+  </div>
+
+  <!-- ACTIVITY -->
+  <div class="entity">
+    <div class="entity-header">ACTIVITY</div>
+    <table>
+      <tr class="pk"><td>PK</td><td>ActivityID</td><td>INT</td></tr>
+      <tr><td></td><td>ActivityName</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>Description</td><td>TEXT</td></tr>
+      <tr><td></td><td>Location</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>MaxParticipants</td><td>INT</td></tr>
+    </table>
+  </div>
+
+  <!-- CAMPER_ACTIVITY (junction) -->
+  <div class="entity">
+    <div class="entity-header">CAMPER_ACTIVITY</div>
+    <table>
+      <tr class="pk"><td>PK</td><td>CamperActivityID</td><td>INT</td></tr>
+      <tr class="fk"><td>FK</td><td>CamperID</td><td>INT</td></tr>
+      <tr class="fk"><td>FK</td><td>ActivityID</td><td>INT</td></tr>
+      <tr><td></td><td>ActivityDate</td><td>DATE</td></tr>
+      <tr><td></td><td>ParticipationLevel</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>Notes</td><td>TEXT</td></tr>
+    </table>
+  </div>
+
+  <!-- PARENT_UPDATE -->
+  <div class="entity">
+    <div class="entity-header">PARENT_UPDATE</div>
+    <table>
+      <tr class="pk"><td>PK</td><td>UpdateID</td><td>INT</td></tr>
+      <tr class="fk"><td>FK</td><td>CamperID</td><td>INT</td></tr>
+      <tr class="fk"><td>FK</td><td>StaffID</td><td>INT</td></tr>
+      <tr><td></td><td>SentAt</td><td>DATETIME</td></tr>
+      <tr><td></td><td>DeliveryMethod</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>Content</td><td>TEXT</td></tr>
+      <tr><td></td><td>Acknowledged</td><td>BOOLEAN</td></tr>
+    </table>
+  </div>
+
+  <!-- PHONE_LOG -->
+  <div class="entity">
+    <div class="entity-header">PHONE_LOG</div>
+    <table>
+      <tr class="pk"><td>PK</td><td>LogID</td><td>INT</td></tr>
+      <tr class="fk"><td>FK</td><td>CamperID</td><td>INT</td></tr>
+      <tr class="fk"><td>FK</td><td>ParentID</td><td>INT</td></tr>
+      <tr><td></td><td>ContactDate</td><td>DATETIME</td></tr>
+      <tr><td></td><td>DurationMinutes</td><td>INT</td></tr>
+      <tr><td></td><td>InitiatedBy</td><td>VARCHAR</td></tr>
+      <tr><td></td><td>Notes</td><td>TEXT</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<!-- Relationships -->
+<div class="relationships">
+  <h2>Relationships</h2>
+  <div class="rel-grid">
+    <div class="rel-row"><span class="rel-from">SESSION</span><span class="rel-card">1 ──&lt;</span><span class="rel-to">CABIN</span><span class="rel-label">hosts</span></div>
+    <div class="rel-row"><span class="rel-from">SESSION</span><span class="rel-card">1 ──&lt;</span><span class="rel-to">CAMPER</span><span class="rel-label">enrolls</span></div>
+    <div class="rel-row"><span class="rel-from">CABIN</span><span class="rel-card">1 ──&lt;</span><span class="rel-to">CAMPER</span><span class="rel-label">houses</span></div>
+    <div class="rel-row"><span class="rel-from">CABIN</span><span class="rel-card">1 ──&lt;</span><span class="rel-to">STAFF</span><span class="rel-label">assigned to</span></div>
+    <div class="rel-row"><span class="rel-from">CAMPER</span><span class="rel-card">M ──M</span><span class="rel-to">PARENT_GUARDIAN</span><span class="rel-label">via CAMPER_PARENT</span></div>
+    <div class="rel-row"><span class="rel-from">CAMPER</span><span class="rel-card">1 ──&lt;</span><span class="rel-to">CAMPER_NOTE</span><span class="rel-label">has</span></div>
+    <div class="rel-row"><span class="rel-from">STAFF</span><span class="rel-card">1 ──&lt;</span><span class="rel-to">CAMPER_NOTE</span><span class="rel-label">writes</span></div>
+    <div class="rel-row"><span class="rel-from">CAMPER</span><span class="rel-card">M ──M</span><span class="rel-to">ACTIVITY</span><span class="rel-label">via CAMPER_ACTIVITY</span></div>
+    <div class="rel-row"><span class="rel-from">CAMPER</span><span class="rel-card">1 ──&lt;</span><span class="rel-to">PARENT_UPDATE</span><span class="rel-label">subject of</span></div>
+    <div class="rel-row"><span class="rel-from">STAFF</span><span class="rel-card">1 ──&lt;</span><span class="rel-to">PARENT_UPDATE</span><span class="rel-label">sends</span></div>
+    <div class="rel-row"><span class="rel-from">CAMPER</span><span class="rel-card">1 ──&lt;</span><span class="rel-to">PHONE_LOG</span><span class="rel-label">involved in</span></div>
+    <div class="rel-row"><span class="rel-from">PARENT_GUARDIAN</span><span class="rel-card">1 ──&lt;</span><span class="rel-to">PHONE_LOG</span><span class="rel-label">contacts via</span></div>
+  </div>
+</div>
+
+</body>
+</html>
